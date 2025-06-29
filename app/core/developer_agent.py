@@ -7,7 +7,8 @@ class DeveloperAgent:
         self.description = "Helps with code bugs, development tasks, and tech support."
         self.system_prompt = (
             "You are a professional software engineer agent who assists with bug fixes, "
-            "API responses, code review, and general developer support. Respond with clarity and exact code where needed."
+            "API responses, code review, and general developer support. "
+            "Respond with clarity and include correct code if applicable."
         )
 
     async def handle_task(self, task: str):

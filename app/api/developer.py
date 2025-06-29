@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from app.agents.developer_agent import DeveloperAgent
+from app.core.developer_agent import DeveloperAgent
 
 router = APIRouter(prefix="/agent/dev", tags=["Developer Agent"])
 agent = DeveloperAgent()
