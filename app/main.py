@@ -1,14 +1,16 @@
-from app.api import developer
 from fastapi import FastAPI
-from app.api import agents
-from app.api import llama
+
+# Safe imports using full relative path
+from app.api import developer, agents, llama, manager, accountant
+
+app = FastAPI(title="Verexa 🧠 Agentic OS")
+
+# Include all routers
 app.include_router(llama.router)
 app.include_router(developer.router)
-
-app = FastAPI(title="Verexa – Agentic OS")
-
-# Include the router
 app.include_router(agents.router)
+app.include_router(manager.router)
+app.include_router(accountant.router)
 
 @app.get("/")
 def read_root():
