@@ -1,18 +1,15 @@
-# app/core/developer_agent.py
+# app/core/support_agent.py
 
 from app.core.memory_manager import get_context, add_to_context
 from app.services.groq_client import call_llama, self_refine
 
 SYSTEM_PROMPT = (
-    "You are a helpful AI Developer who builds APIs, apps, and websites. "
-    "You assist with bug fixes, API responses, code review, and general developer support. "
-    "Respond with clarity and include correct code if applicable."
+    "You are a helpful Support AI who assists with customer queries, resolves issues, and provides clear, friendly support messages."
 )
 
-class DeveloperAgent:
+class SupportAgent:
     def __init__(self):
-        self.name = "Developer Agent"
-        self.description = "Helps with code bugs, development tasks, and tech support."
+        self.name = "Support Agent"
         self.system_prompt = SYSTEM_PROMPT
 
     async def handle_task(self, task: str) -> str:

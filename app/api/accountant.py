@@ -4,6 +4,7 @@ from fastapi import APIRouter, Query
 from app.core import accountant_agent
 
 router = APIRouter(prefix="/agent/accountant", tags=["Accountant Agent"])
+router = APIRouter(prefix="/accountant", tags=["accountant"])
 
 @router.post("/record")
 def record_transaction(
@@ -21,3 +22,9 @@ def get_summary():
 @router.get("/ledger")
 def get_ledger():
     return {"response": accountant_agent.get_ledger()}
+
+@router.get("/test")
+async def test_marketing_agent(task: str):
+    agent = accountant_agent()
+    response = await agent.respond_to(task)
+    return {"response": response}

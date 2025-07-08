@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agent Task Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      padding: 40px;
+    }
+    h1 {
+      color: #333;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .result {
+      background: white;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    code {
+      background: #eee;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: block;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔧 Team Agent Task Tester</h1>
+  <p>Enter a task and test how TeamLeader assigns it:</p>
+
+  <textarea id="taskInput" placeholder="e.g. Write an email campaign for our new product launch"></textarea>
+  <br>
+  <button onclick="assignTask()">Assign Task</button>
+
+  <div class="result" id="resultBox" style="display:none;">
+    <h3>📋 Result</h3>
+    <p><strong>Assigned To:</strong> <span id="assignedTo"></span></p>
+    <p><strong>Response:</strong></p>
+    <code id="agentResponse"></code>
+    <p><strong>Coral Metadata:</strong></p>
+    <code id="coralInfo"></code>
+  </div>
+
+  <script>
+    async function assignTask() {
+      const task = document.getElementById('taskInput').value.trim();
+      if (!task) {
+        alert("Please enter a task.");
+        return;
+      }
+
+      const response = await fetch("/agents/assign", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task: task })
+      });
+
+      const data = await response.json();
+
+      document.getElementById('assignedTo').innerText = data.assigned_to || "N/A";
+      document.getElementById('agentResponse').innerText = data.response || "No response.";
+      document.getElementById('coralInfo').innerText = data.coral_metadata || "None";
+      document.getElementById('resultBox').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
