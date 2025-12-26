@@ -1,62 +1,44 @@
-from app.config import GROQ_API_KEY, GROQ_MODEL
-import httpx
-import io
-import io
-from whisper import load_model
-from scipy.io.wavfile import write as write_wav
-from bark import SAMPLE_RATE, generate_audio
-import numpy as np
+"""
+SAFE MODE – MOCK LLM CLIENT
+This file is used during OS bring-up and agent testing.
+No external API calls. No paid services.
+"""
 
-GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+def call_llama(messages):
+    # Extract last user message safely
+    user_msg = ""
+    for m in messages:
+        if m.get("role") == "user":
+            user_msg = m.get("content", "")
 
-async def call_llama(messages: list):
-    headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "model": GROQ_MODEL,
-        "messages": messages,
-        "temperature": 0.7
-    }
-    async with httpx.AsyncClient() as client:
-        response = await client.post(GROQ_API_URL, headers=headers, json=payload)
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
+    return f"[MOCK LLM] Processed request: {user_msg}"
+
 
 def generate_response(user_input: str, system_prompt: str) -> str:
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_input}
-    ]
-    import asyncio
-    return asyncio.run(call_llama(messages))
+    return (
+        "[MOCK RESPONSE]\n"
+        f"System Prompt: {system_prompt}\n"
+        f"User Input: {user_input}\n"
+        "Status: Agent logic executed successfully."
+    )
+
 
 async def self_refine(response: str) -> str:
+    return f"[MOCK REFINEMENT]\n{response}"
+
+# -------------------------------
+# OPTIONAL FEATURES (SAFE STUBS)
+# -------------------------------
+
+def transcribe_audio(audio_bytes: bytes) -> str:
     """
-    Compound-Beta: Sends agent's initial response back to the model with a prompt asking for improvement.
+    Speech-to-text stub (disabled in safe mode)
     """
-    reflection_prompt = (
-        "Here is the initial assistant response:\n"
-        f"""{response}"""
-        "\n\nCan you revise or improve this response to make it clearer, more complete, or more helpful?"
-    )
-    messages = [
-        {"role": "system", "content": "You are a reflective AI that improves assistant responses."},
-        {"role": "user", "content": reflection_prompt}
-    ]
-    return await call_llama(messages)
+    return "[SPEECH DISABLED] Audio transcription not available."
 
 
-def transcribe_audio(audio_bytes):
-    model = load_model("base")
-    audio = np.frombuffer(audio_bytes, dtype=np.int16)
-    result = model.transcribe(audio=audio, language="en")
-    return result["text"]
-
-def synthesize_speech(text):
-    audio_array = generate_audio(text)
-    wav_io = io.BytesIO()
-    write_wav(wav_io, SAMPLE_RATE, audio_array)
-    wav_io.seek(0)
-    return wav_io.read()
+def synthesize_speech(text: str) -> bytes:
+    """
+    Text-to-speech stub (disabled in safe mode)
+    """
+    return b""
